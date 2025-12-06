@@ -4,7 +4,7 @@ const {
 
 import category from "../service/category.js";
 
-let CategoryController = {
+class CategoryController extends Chan.Controller {
   // 增
   async create(req, res, next) {
     try {
@@ -14,7 +14,7 @@ let CategoryController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 删除
   async delete(req, res, next) {
@@ -25,7 +25,7 @@ let CategoryController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 改
   async update(req, res, next) {
@@ -36,7 +36,7 @@ let CategoryController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 查
   async find(req, res, next) {
@@ -46,7 +46,7 @@ let CategoryController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 查
   async findId(req, res, next) {
@@ -57,7 +57,7 @@ let CategoryController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 查子栏目
   async findSubId(req, res, next) {
@@ -68,7 +68,7 @@ let CategoryController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 搜索栏目
   async search(req, res, next) {
@@ -79,7 +79,7 @@ let CategoryController = {
     } catch (err) {
       next(err);
     }
-  },
-};
+  }
+}
 
-export default CategoryController;
+export default new CategoryController();

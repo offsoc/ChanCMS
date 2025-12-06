@@ -1,14 +1,17 @@
-import dayjs from "dayjs";
 import * as cheerio from "cheerio";
 import { isValidTargetUrl } from "../../../middleware/guard.js";
 import { cleanHtml } from "../../../middleware/clearhtml.js";
 const {
   common: { success, fail },
+  helper: { formatDateFields },
 } = Chan;
 
 import collect from "../service/collect.js";
 
-let CollectController = {
+class CollectController extends Chan.Controller {
+  constructor() {
+    super();
+  }
   async getPages(req, res, next) {
     try {
       let arr = [];
@@ -36,7 +39,7 @@ let CollectController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
   //测试列表所有地址
   async getArticle(req, res, next) {
@@ -84,7 +87,7 @@ let CollectController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
   // 增
   async create(req, res, next) {
@@ -95,7 +98,7 @@ let CollectController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 删除
   async delete(req, res, next) {
@@ -106,7 +109,7 @@ let CollectController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 改
   async update(req, res, next) {
@@ -117,7 +120,7 @@ let CollectController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 查
   async detail(req, res, next) {
@@ -128,35 +131,31 @@ let CollectController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 搜索
   async search(req, res, next) {
     try {
       const { cur, keyword, pageSize = 10 } = req.query;
       const data = await collect.search(keyword, cur, pageSize);
-      data.list.forEach((ele) => {
-        ele.createdAt = dayjs(ele.createdAt).format("YYYY-MM-DD HH:mm");
-      });
+      data.list = formatDateFields(data.list);
       res.json({ ...success, data: data });
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 列表
   async list(req, res, next) {
     try {
       const { cur, pageSize = 10 } = req.query;
       let data = await collect.list(cur, pageSize);
-      data.list.forEach((ele) => {
-        ele.updatedAt = dayjs(ele.updatedAt).format("YYYY-MM-DD HH:mm");
-      });
+      data.list = formatDateFields(data.list);
       res.json({ ...success, data: data });
     } catch (err) {
       next(err);
     }
-  },
-};
+  }
+}
 
-export default CollectController;
+export default new CollectController();

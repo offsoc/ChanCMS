@@ -3,7 +3,7 @@ const {
 } = Chan;
 
 import model from "../service/model.js";
-let ModelController = {
+class ModelController extends Chan.Controller {
   // 增
   async create(req, res, next) {
     try {
@@ -18,7 +18,7 @@ let ModelController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 删除
   async delete(req, res, next) {
@@ -29,7 +29,7 @@ let ModelController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 改
   async update(req, res, next) {
@@ -40,7 +40,7 @@ let ModelController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 查
   async detail(req, res, next) {
@@ -51,7 +51,7 @@ let ModelController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 是否被使用
   async hasUse(req, res, next) {
@@ -62,7 +62,7 @@ let ModelController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 列表
   async list(req, res, next) {
@@ -73,7 +73,7 @@ let ModelController = {
     } catch (err) {
       next(err);
     }
-  },
-};
+  }
+}
 
-export default ModelController;
+export default new ModelController();

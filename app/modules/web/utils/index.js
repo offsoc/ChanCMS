@@ -13,7 +13,9 @@ export const homeView = (nav) => {
     nav[0].pinyin == "home" &&
     nav[0].listView
   ) {
-    view = nav[0].listView;
+    const { type, listView, articleView } = nav[0];
+    // type: 0-栏目(渲染列表模板) 1-页面(渲染内容模板)
+    view = type == '0' ? listView : articleView;
   }
   return view;
 };

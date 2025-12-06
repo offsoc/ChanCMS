@@ -10,9 +10,9 @@ import friendlink from "../../cms/service/friendlink.js";
 import article from "../../cms/service/article.js";
 import Api from "../service/Api.js";
 
-const ApiController = {
+class ApiController extends Chan.Controller {
   // 获取站点信息
-  site: async (req, res, next) => {
+  async site(req, res, next) {
     try {
       const data = await Site.info();
       res.json({ ...success, data: data });
@@ -20,10 +20,10 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   //碎片
-  fragList: async (req, res, next) => {
+  async fragList(req, res, next) {
     try {
       const data = await frag.list();
       res.json({ ...success, data: data });
@@ -31,10 +31,10 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   //Tag标签
-  getTag: async (req, res, next) => {
+  async getTag(req, res, next) {
     try {
       const data = await tag.list();
       res.json({ ...success, data: data });
@@ -42,10 +42,10 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   //友情链接
-  getFriendlink: async (req, res, next) => {
+  async getFriendlink(req, res, next) {
     try {
       const data = await friendlink.list();
       res.json({ ...success, data: data });
@@ -53,10 +53,10 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   //栏目
-  category: async (req, res, next) => {
+  async category(req, res, next) {
     try {
       const category = await Api.category();
       const nav = tree(category);
@@ -65,7 +65,7 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   /**
    * @param {Object} attr 1头条 2推荐 3轮播 4热门
@@ -73,7 +73,7 @@ const ApiController = {
    * @param {Object} start 开始
    * @returns
    */
-  getArticleList: async (req, res, next) => {
+  async getArticleList(req, res, next) {
     try {
       const { attr, len, start } = req.query;
       let params = { attr, len: +len, start: +start };
@@ -83,7 +83,7 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   /**
    * @param {Object} attr 1头条 2推荐 3轮播 4热门
@@ -91,7 +91,7 @@ const ApiController = {
    * @param {Object} start 开始
    * @returns
    */
-  getArticleListByCid: async (req, res, next) => {
+  async getArticleListByCid(req, res, next) {
     try {
       const { cid, attr, len } = req.query;
       let params = { cid, attr, len: +len };
@@ -101,13 +101,13 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   /**
    * @description 通过文章id查找对应的tag标签
    * @param {Object} aid 文章id
    */
-  getArticleTag: async (req, res, next) => {
+  async getArticleTag(req, res, next) {
     try {
       const { id } = req.query;
       const data = await Api.getArticleTag(id);
@@ -116,7 +116,7 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   /**
    * @description 栏目列表
@@ -124,7 +124,7 @@ const ApiController = {
    * @param {Object} current 当前页面
    * @param {Object} pageSize = 10 每页显示条数
    */
-  list: async (req, res, next) => {
+  async list(req, res, next) {
     try {
       const { id, current = 1, pageSize = 10 } = req.query;
       const data = await Api.list({ id, current, pageSize });
@@ -133,7 +133,7 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   /**
    * @description 栏目列表
@@ -141,7 +141,7 @@ const ApiController = {
    * @param {Object} current 当前页面
    * @param {Object} pageSize = 10 每页显示条数
    */
-  getArticle: async (req, res, next) => {
+  async getArticle(req, res, next) {
     try {
       const { id } = req.query;
       const data = await Api.article(id);
@@ -150,10 +150,10 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   //banner轮播
-  banner: async (req, res, next) => {
+  async banner(req, res, next) {
     try {
       const { cur = 1, pageSize = 10 } = req.query;
       const data = await Api.banner(cur, pageSize);
@@ -162,10 +162,10 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   //pv排行
-  pv: async (req, res, next) => {
+  async pv(req, res, next) {
     try {
       const { id = 1, len = 10 } = req.query;
       const data = await Api.pv(len, id);
@@ -174,7 +174,7 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   /**
    * @description 图文（带图文）
@@ -182,7 +182,7 @@ const ApiController = {
    * @param {Number} len 默认10条
    * @param {*} attr 1头条 2推荐 3轮播 4热门
    */
-  articleImg: async (req, res, next) => {
+  async articleImg(req, res, next) {
     try {
       const { id = "", attr = "", len = 10 } = req.query;
       const data = await Api.articleImg({ len, id, attr });
@@ -191,10 +191,10 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   //tag列表
-  tagList: async (req, res, next) => {
+  async tagList(req, res, next) {
     try {
       const { name = "", current = 1, pageSize = 10 } = req.query;
       const data = await Api.tagList({ name, current, pageSize });
@@ -203,10 +203,10 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   //上一页
-  prev: async (req, res, next) => {
+  async prev(req, res, next) {
     try {
       const { id, cid } = req.query;
       const data = await Api.prev({ id, cid });
@@ -215,10 +215,10 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   //下一页
-  next: async (req, res, next) => {
+  async next(req, res, next) {
     try {
       const { id, cid } = req.query;
       const data = await Api.next({ id, cid });
@@ -227,13 +227,13 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   /**
    * @description 当前文章tag
    * @param {Object} id 文章id
    */
-  getTagsById: async (req, res, next) => {
+  async getTagsById(req, res, next) {
     try {
       const { id } = req.query;
       const data = await Api.getTagsById(id);
@@ -242,7 +242,7 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   /**
    * @description 搜索
@@ -251,7 +251,7 @@ const ApiController = {
    * @param {Object} pageSize 每页显示条数
    * @param {Object} cid 栏目id
    */
-  search: async (req, res, next) => {
+  async search(req, res, next) {
     try {
       const { key, cur, pageSize, cid } = req.query;
       const data = await Api.search(key, cur, pageSize, cid);
@@ -260,7 +260,7 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   /**
    * @description 浏览次数增加
@@ -268,7 +268,7 @@ const ApiController = {
    * @param {*} res
    * @param {*} next
    */
-  pvadd: async (req, res, next) => {
+  async pvadd(req, res, next) {
     try {
       const { id } = req.query;
       const data = await Api.pvadd(id);
@@ -277,7 +277,7 @@ const ApiController = {
       console.error(error);
       next(error);
     }
-  },
-};
+  }
+}
 
-export default ApiController;
+export default new ApiController();

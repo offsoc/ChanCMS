@@ -3,4 +3,7 @@
  * @deprecated 防点击劫持，防止恶意js攻击,减少 XSS 攻击面
  * @type {{level: number}}
  */
-export const WAF_LEVEL = process.env.WAF_LEVEL || 1; 
+export const WAF_LEVEL = process.env.WAF_LEVEL || 1;
+export default {
+  WAF_LEVEL,
+};

@@ -6,7 +6,7 @@ const {
 
 import Config from "../service/Config.js";
 
-let ConfigController = {
+class ConfigController extends Chan.Controller {
   async list(req, res, next) {
     try {
       const query = req.query || {};
@@ -15,7 +15,7 @@ let ConfigController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   async getlist(req, res, next) {
     try {
@@ -28,7 +28,7 @@ let ConfigController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
   // 增
   async create(req, res, next) {
     try {
@@ -38,7 +38,7 @@ let ConfigController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 查
   async detail(req, res, next) {
@@ -49,7 +49,7 @@ let ConfigController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   //删除
   async delete(req, res, next) {
@@ -60,7 +60,7 @@ let ConfigController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 改
   async update(req, res, next) {
@@ -71,7 +71,7 @@ let ConfigController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   //批量更新
   async updateMany(req, res, next) {
@@ -82,7 +82,7 @@ let ConfigController = {
     } catch (err) {
       next(err);
     }
-  },
-};
+  }
+}
 
-export default ConfigController;
+export default new ConfigController();

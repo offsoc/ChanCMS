@@ -1,6 +1,6 @@
 const {
   knex,
-  config: { template, env, cache },
+  config: { template, env, cache, APP_VERSION },
 } = Chan;
 
 export default () => {
@@ -12,29 +12,33 @@ export default () => {
       }
       //模板数据
       let obj = {};
-      let configData = await knex("sys_config").where({
-        "type_code":"cms_data"
-      }).select();
-      configData.forEach(v => {
+      let configData = await knex("sys_config")
+        .where({
+          type_code: "cms_data",
+        })
+        .select();
+      configData.forEach((v) => {
         obj[v.config_key] = JSON.parse(v.config_value);
-      })
+      });
       Chan.config.data = obj;
       //站点
-      let result = await knex("cms_site").select([
-        "name",
-        "logo",
-        "domain",
-        "email",
-        "wx",
-        "icp",
-        "code",
-        "json",
-        "title",
-        "keywords",
-        "description",
-        "template",
-        "uploadWay"
-      ]).first();
+      let result = await knex("cms_site")
+        .select([
+          "name",
+          "logo",
+          "domain",
+          "email",
+          "wx",
+          "icp",
+          "code",
+          "json",
+          "title",
+          "keywords",
+          "description",
+          "template",
+          "uploadWay",
+        ])
+        .first();
 
       if (result) {
         let data = result;
@@ -45,6 +49,7 @@ export default () => {
           template: _template,
           domain,
           static_url: `/public/template/${_template}/`,
+          APP_VERSION: APP_VERSION,
         };
         await next();
       } else {

@@ -34,12 +34,12 @@ class SysUserService extends Chan.Service {
       }
 
       // 查询 sys_user_role 表获取角色信息
-      const roles = await this.knex("sys_user_role")
+      const roles = await this.db("sys_user_role")
         .select("role_id")
         .where("user_id", id)
         .first();
 
-      const _role = await this.knex("sys_role")
+      const _role = await this.db("sys_role")
         .select("key")
         .where("id", roles.role_id)
         .first();
@@ -77,9 +77,9 @@ class SysUserService extends Chan.Service {
   async list({ cur = 1, pageSize = 10 }) {
     try {
       // 查询个数
-      const total = await this.knex(this.model).count("id", { as: "count" });
+      const total = await this.db(this.tableName).count("id", { as: "count" });
       const offset = parseInt((cur - 1) * pageSize);
-      const list = await this.knex("sys_user as u")
+      const list = await this.db("sys_user as u")
         .select(
           "u.id",
           "u.username",
@@ -111,9 +111,9 @@ class SysUserService extends Chan.Service {
   async create({ role_id, ...params }) {
     try {
       // 等待事务完成
-      await this.knex.transaction(async (trx) => {
+      await this.db.transaction(async (trx) => {
         // 插入用户数据并获取新插入行的 id
-        const [userId] = await trx(this.model).insert(params).returning("id");
+        const [userId] = await trx(this.tableName).insert(params).returning("id");
         // 将用户和角色的关联信息插入到 sys_user_role 表中
         await trx("sys_user_role").insert({
           user_id: userId,
@@ -130,11 +130,11 @@ class SysUserService extends Chan.Service {
 
   //改
   async update({ userId, role_id, ...params }) {
-    return this.knex.transaction(async (trx) => {
+    return this.db.transaction(async (trx) => {
       try {
         // 更新 sys_role 表
         if (Object.keys(params).length > 0) {
-          await trx(this.model).where("id", userId).update(params);
+          await trx(this.tableName).where("id", userId).update(params);
         }
 
         // 尝试更新 sys_user_role 表

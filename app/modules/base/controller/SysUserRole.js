@@ -6,7 +6,7 @@ const {
 
 import SysUserRole from "../service/SysUserRole.js";
 
-let SysUserRoleController = {
+class SysUserRoleController extends Chan.Controller {
   // 查
   async detail(req, res, next) {
     try {
@@ -16,7 +16,7 @@ let SysUserRoleController = {
     } catch (err) {
       next(err);
     }
-  },
-};
+  }
+}
 
-export default SysUserRoleController;
+export default new SysUserRoleController();

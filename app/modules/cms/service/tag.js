@@ -15,14 +15,14 @@ class TagService extends Chan.Service {
   }
 
   async has(path) {
-    const res = await this.one({ path });
+    const res = await this.findOne({ path });
     return Object.keys(res?.data||{}).length > 0;
   }
 
   // 删除tag ,需要删除cms_articleTag.js 里面的tid
   async delete(id) {
     try {
-      const has = await this.knex.raw(
+      const has = await this.db.raw(
         `SELECT tid FROM cms_articletag WHERE tid = ?`, // 使用?作为参数占位符
         [id] // 参数单独传递
       );
@@ -55,11 +55,11 @@ class TagService extends Chan.Service {
   async list(cur = 1, pageSize = 20) {
     try {
       // 查询个数
-      const total = await this.knex(this.model).count("id", { as: "count" });
+      const total = await this.db(this.tableName).count("id", { as: "count" });
       const offset = parseInt((cur - 1) * pageSize);
-      const list = await this.knex
+      const list = await this.db
         .select(["id", "name", "path"])
-        .from(this.model)
+        .from(this.tableName)
         .limit(pageSize)
         .offset(offset)
         .orderBy("id", "desc");
@@ -78,9 +78,9 @@ class TagService extends Chan.Service {
 
   async hot(size = 20) {
     try {
-      const list = await this.knex
+      const list = await this.db
         .select(["id", "name", "path", "count"])
-        .from(this.model)
+        .from(this.tableName)
         .orderBy("count", "desc")
         .limit(size);
       return list;
@@ -93,7 +93,7 @@ class TagService extends Chan.Service {
   // 查
   async detail(id) {
     try {
-      const data = await this.knex(this.model).where("id", "=", id).select();
+      const data = await this.db(this.tableName).where("id", "=", id).select();
       return data[0];
       // const res = await this.findById({query: {id}});
       // return res.data;
@@ -107,23 +107,23 @@ class TagService extends Chan.Service {
     try {
       // 查询个数
       const total = key
-        ? await this.knex(this.model)
+        ? await this.db(this.tableName)
             .whereRaw("name COLLATE utf8mb4_general_ci LIKE ?", [`%${key}%`])
             .count("id", { as: "count" })
-        : await this.knex(this.model).count("id", { as: "count" });
+        : await this.db(this.tableName).count("id", { as: "count" });
 
       const offset = parseInt((cur - 1) * pageSize);
       const list = key
-        ? await this.knex
+        ? await this.db
             .select(["id", "name", "path"])
-            .from(this.model)
+            .from(this.tableName)
             .whereRaw("name COLLATE utf8mb4_general_ci LIKE ?", [`%${key}%`])
             .limit(pageSize)
             .offset(offset)
             .orderBy("id", "desc")
-        : await this.knex
+        : await this.db
             .select(["id", "name", "path"])
-            .from(this.model)
+            .from(this.tableName)
             .limit(pageSize)
             .offset(offset)
             .orderBy("id", "desc");

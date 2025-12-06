@@ -17,7 +17,7 @@ class CategoryService extends Chan.Service {
   // 删
   async delete(id) {
     try {
-      const res = await this.knex(this.model).where("id", "=", id).del();
+      const res = await this.db(this.tableName).where("id", "=", id).del();
       return { code: 200, data: res };
     } catch (err) {
       console.error(err);
@@ -33,7 +33,7 @@ class CategoryService extends Chan.Service {
   async update(body) {
     const { id, ...params } = body;
     try {
-      const res = await this.knex(this.model)
+      const res = await this.db(this.tableName)
         .where("id", "=", id)
         .update(params);
       return res;
@@ -46,7 +46,7 @@ class CategoryService extends Chan.Service {
   // 查全部栏目
   async find() {
     try {
-      const res = await this.all({ orderBy: "asc" });
+      const res = await super.find({ sort: { orderBy: "asc" } });
       return res;
     } catch (err) {
       console.error(err);
@@ -57,7 +57,7 @@ class CategoryService extends Chan.Service {
   // 查栏目
   async findId(id) {
     try {
-      const data = await this.knex(this.model)
+      const data = await this.db(this.tableName)
         .where("id", "=", id)
         .select([
           "id",
@@ -89,7 +89,7 @@ class CategoryService extends Chan.Service {
   // 查子栏目
   async findSubId(id) {
     try {
-      const result = await this.knex(this.model).where("pid", "=", id).select();
+      const result = await this.db(this.tableName).where("pid", "=", id).select();
       return result;
     } catch (err) {
       console.error(err);
@@ -100,14 +100,14 @@ class CategoryService extends Chan.Service {
   // 搜索栏目
   async search(key) {
     try {
-      let query = this.knex(this.model)
-        .leftJoin("cms_model", `${this.model}.mid`, "cms_model.id")
-        .select(`${this.model}.*`, "cms_model.model")
-        .orderBy(`${this.model}.orderBy`, "asc");
+      let query = this.db(this.tableName)
+        .leftJoin("cms_model", `${this.tableName}.mid`, "cms_model.id")
+        .select(`${this.tableName}.*`, "cms_model.model")
+        .orderBy(`${this.tableName}.orderBy`, "asc");
 
       if (key) {
         query = query.whereRaw(
-          `${this.model}.name COLLATE utf8mb4_general_ci LIKE ?`,
+          `${this.tableName}.name COLLATE utf8mb4_general_ci LIKE ?`,
           [`%${key}%`]
         );
       }
@@ -121,10 +121,10 @@ class CategoryService extends Chan.Service {
 
     // try {
     //   const res = key
-    //     ? await this.knex(this.model)
+    //     ? await this.db(this.tableName)
     //         .whereRaw("name COLLATE utf8mb4_general_ci LIKE ?", [`%${key}%`])
     //         .orderBy("orderBy", "asc")
-    //     : await this.knex(this.model).orderBy("orderBy", "asc");
+    //     : await this.db(this.tableName).orderBy("orderBy", "asc");
     //   return res;
     // } catch (err) {
     //   console.error(err);

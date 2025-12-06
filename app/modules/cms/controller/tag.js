@@ -2,7 +2,7 @@ const {
   common: { success, fail },
 } = Chan;
 import tag from "../service/tag.js";
-let tagController = {
+class TagController extends Chan.Controller {
   // 增
   async create(req, res, next) {
     try {
@@ -12,7 +12,7 @@ let tagController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 删除
   async delete(req, res, next) {
@@ -23,7 +23,7 @@ let tagController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 改
   async update(req, res, next) {
@@ -34,7 +34,7 @@ let tagController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 查
   async detail(req, res, next) {
@@ -45,7 +45,7 @@ let tagController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 列表
   async list(req, res, next) {
@@ -56,7 +56,7 @@ let tagController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   async has(req, res, next) {
     try {
@@ -66,7 +66,7 @@ let tagController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 搜索
   async search(req, res, next) {
@@ -77,7 +77,7 @@ let tagController = {
     } catch (err) {
       next(err);
     }
-  },
-};
+  }
+}
 
-export default tagController;
+export default new TagController();

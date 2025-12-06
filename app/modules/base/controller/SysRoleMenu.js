@@ -3,7 +3,7 @@ const {
 } = Chan;
 import SysRoleMenu from "../service/SysRoleMenu.js";
 
-let SysRoleMenuController = {
+class SysRoleMenuController extends Chan.Controller {
   async list(req, res, next) {
     try {
       const id = req.query.id;
@@ -12,7 +12,7 @@ let SysRoleMenuController = {
     } catch (err) {
       next(err);
     }
-  },
-};
+  }
+}
 
-export default SysRoleMenuController;
+export default new SysRoleMenuController();

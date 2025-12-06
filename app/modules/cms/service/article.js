@@ -8,7 +8,7 @@ class ArticleService extends Chan.Service {
    * 获取文章中的图片路径（缩略图 + 内容图片）
    */
   async getImgsByArticleId(id, arr) {
-    const img = await this.knex("cms_article")
+    const img = await this.db("cms_article")
       .select("img", "content")
       .where("id", id)
       .first();
@@ -27,9 +27,9 @@ class ArticleService extends Chan.Service {
     try {
       const { defaultParams, fieldParams } = body;
 
-      await this.knex.transaction(async (trx) => {
+      await this.db.transaction(async (trx) => {
         // 插入基础文章
-        const result = await this.knex(this.model)
+        const result = await this.db(this.tableName)
           .insert(defaultParams)
           .transacting(trx);
         const id = result[0];
@@ -37,7 +37,7 @@ class ArticleService extends Chan.Service {
         if (!id) throw new Error("Failed to insert article");
 
         // 获取最后插入的文章信息（替代原始 ORDER BY DESC LIMIT 1）
-        const article = await this.knex(this.model)
+        const article = await this.db(this.tableName)
           .where("id", id)
           .select("id", "cid")
           .first()
@@ -45,7 +45,7 @@ class ArticleService extends Chan.Service {
         const { cid } = article;
 
         // 获取模型ID
-        const modIdRow = await this.knex("cms_category")
+        const modIdRow = await this.db("cms_category")
           .where("id", cid)
           .select("mid")
           .first()
@@ -54,7 +54,7 @@ class ArticleService extends Chan.Service {
         if (!modIdRow || !modIdRow.mid) return;
 
         // 获取模型表名
-        const tableRow = await this.knex("cms_model")
+        const tableRow = await this.db("cms_model")
           .where("id", modIdRow.mid)
           .select("tableName")
           .first()
@@ -62,7 +62,7 @@ class ArticleService extends Chan.Service {
 
         if (tableRow && tableRow.tableName) {
           // 插入扩展字段数据
-          await this.knex(tableRow.tableName)
+          await this.db(tableRow.tableName)
             .insert({ ...fieldParams, aid: id })
             .transacting(trx);
         }
@@ -76,12 +76,12 @@ class ArticleService extends Chan.Service {
           if (tags.length > 0) {
             // 批量插入标签映射
             const tagMappings = tags.map((tid) => ({ aid: id, tid }));
-            await this.knex("cms_articletag")
+            await this.db("cms_articletag")
               .insert(tagMappings)
               .transacting(trx);
 
             // 更新标签计数
-            await this.knex("cms_tag")
+            await this.db("cms_tag")
               .whereIn("id", tags)
               .increment("count", 1)
               .transacting(trx);
@@ -105,10 +105,10 @@ class ArticleService extends Chan.Service {
 
       let imgPaths = []; // 收集待删除图片
 
-      await this.knex.transaction(async (trx) => {
+      await this.db.transaction(async (trx) => {
         for (const id of ids) {
           // 获取栏目ID
-          const article = await this.knex(this.model)
+          const article = await this.db(this.tableName)
             .where("id", id)
             .select("cid")
             .first()
@@ -119,14 +119,14 @@ class ArticleService extends Chan.Service {
           const { cid } = article;
 
           // 获取模型表名
-          const modIdRow = await this.knex("cms_category")
+          const modIdRow = await this.db("cms_category")
             .where("id", cid)
             .select("mid")
             .first()
             .transacting(trx);
 
           if (modIdRow?.mid) {
-            const tableRow = await this.knex("cms_model")
+            const tableRow = await this.db("cms_model")
               .where("id", modIdRow.mid)
               .select("tableName")
               .first()
@@ -134,7 +134,7 @@ class ArticleService extends Chan.Service {
 
             if (tableRow?.tableName) {
               // 删除扩展表数据
-              await this.knex(tableRow.tableName)
+              await this.db(tableRow.tableName)
                 .where("aid", id)
                 .del()
                 .transacting(trx);
@@ -153,16 +153,16 @@ class ArticleService extends Chan.Service {
           }
 
           // 删除主文章
-          await this.knex(this.model).where("id", id).del().transacting(trx);
+          await this.db(this.tableName).where("id", id).del().transacting(trx);
 
           // 删除标签映射
-          await this.knex("cms_articletag")
+          await this.db("cms_articletag")
             .where("aid", id)
             .del()
             .transacting(trx);
 
           // 获取旧标签并减计数
-          const record = await this.knex(this.model)
+          const record = await this.db(this.tableName)
             .where("id", id)
             .select("tagId")
             .first()
@@ -170,7 +170,7 @@ class ArticleService extends Chan.Service {
           if (record?.tagId) {
             const oldTags = record.tagId.split(",").map(Number).filter(Boolean);
             if (oldTags.length > 0) {
-              await this.knex("cms_tag")
+              await this.db("cms_tag")
                 .whereIn("id", oldTags)
                 .decrement("count", 1)
                 .where("count", ">", 0) // 防止负数
@@ -192,9 +192,9 @@ class ArticleService extends Chan.Service {
     try {
       const { id, field, oldTagId, ...updateData } = body;
 
-      await this.knex.transaction(async (trx) => {
+      await this.db.transaction(async (trx) => {
         // 获取栏目ID以确定模型
-        const article = await this.knex(this.model)
+        const article = await this.db(this.tableName)
           .where("id", id)
           .select("cid")
           .first()
@@ -202,14 +202,14 @@ class ArticleService extends Chan.Service {
 
         if (!article) throw new Error("Article not found");
 
-        const modIdRow = await this.knex("cms_category")
+        const modIdRow = await this.db("cms_category")
           .where("id", article.cid)
           .select("mid")
           .first()
           .transacting(trx);
 
         if (modIdRow?.mid) {
-          const tableRow = await this.knex("cms_model")
+          const tableRow = await this.db("cms_model")
             .where("id", modIdRow.mid)
             .select("tableName")
             .first()
@@ -217,18 +217,18 @@ class ArticleService extends Chan.Service {
 
           if (tableRow?.tableName) {
             const tableName = tableRow.tableName;
-            const exists = await this.knex(tableName)
+            const exists = await this.db(tableName)
               .where("aid", id)
               .first()
               .transacting(trx);
 
             if (exists) {
-              await this.knex(tableName)
+              await this.db(tableName)
                 .where("aid", id)
                 .update(field)
                 .transacting(trx);
             } else {
-              await this.knex(tableName)
+              await this.db(tableName)
                 .insert({ ...field, aid: id })
                 .transacting(trx);
             }
@@ -236,7 +236,7 @@ class ArticleService extends Chan.Service {
         }
 
         // 删除旧标签关联
-        await this.knex("cms_articletag")
+        await this.db("cms_articletag")
           .where("aid", id)
           .del()
           .transacting(trx);
@@ -245,7 +245,7 @@ class ArticleService extends Chan.Service {
         if (oldTagId && oldTagId.length > 0) {
           const oldTags = oldTagId.split(",").map(Number).filter(Boolean);
           if (oldTags.length > 0) {
-            await this.knex("cms_tag")
+            await this.db("cms_tag")
               .whereIn("id", oldTags)
               .decrement("count", 1)
               .where("count", ">", 0)
@@ -260,11 +260,11 @@ class ArticleService extends Chan.Service {
             .map(Number)
             .filter(Boolean);
           if (newTags.length > 0) {
-            await this.knex("cms_articletag")
+            await this.db("cms_articletag")
               .insert(newTags.map((tid) => ({ aid: id, tid })))
               .transacting(trx);
 
-            await this.knex("cms_tag")
+            await this.db("cms_tag")
               .whereIn("id", newTags)
               .increment("count", 1)
               .transacting(trx);
@@ -272,7 +272,7 @@ class ArticleService extends Chan.Service {
         }
 
         // 更新主表
-        await this.knex(this.model)
+        await this.db(this.tableName)
           .where("id", id)
           .update(updateData)
           .transacting(trx);
@@ -292,7 +292,7 @@ class ArticleService extends Chan.Service {
       const limit = Math.max(1, parseInt(pageSize) || 10);
       const offset = (page - 1) * limit;
 
-      let query = this.knex(this.model).select([
+      let query = this.db(this.tableName).select([
         "id",
         "title",
         "attr",
@@ -334,24 +334,24 @@ class ArticleService extends Chan.Service {
   // 查：文章详情
   async detail(id) {
     try {
-      const data = await this.knex(this.model).where("id", id).first();
+      const data = await this.db(this.tableName).where("id", id).first();
       if (!data || !data.cid) return false;
 
       let field = {};
 
-      const modIdRow = await this.knex("cms_category")
+      const modIdRow = await this.db("cms_category")
         .where("id", data.cid)
         .select("mid")
         .first();
 
       if (modIdRow?.mid && modIdRow.mid !== "0") {
-        const tableRow = await this.knex("cms_model")
+        const tableRow = await this.db("cms_model")
           .where("id", modIdRow.mid)
           .select("tableName")
           .first();
 
         if (tableRow?.tableName) {
-          const fieldData = await this.knex(tableRow.tableName)
+          const fieldData = await this.db(tableRow.tableName)
             .where("aid", id)
             .first();
 
@@ -378,11 +378,11 @@ class ArticleService extends Chan.Service {
       const escapeLike = (str) => str.replace(/[%_\\]/g, "\\$&");
       const safeKey = keyword ? `%${escapeLike(keyword)}%` : "%";
 
-      let countQuery = this.knex("cms_article as a")
+      let countQuery = this.db("cms_article as a")
         .leftJoin("cms_category as c", "a.cid", "c.id")
         .count("* as count");
 
-      let listQuery = this.knex("cms_article as a")
+      let listQuery = this.db("cms_article as a")
         .select(
           "a.id",
           "a.title",
@@ -430,7 +430,7 @@ class ArticleService extends Chan.Service {
 
   // 增加浏览量
   async count(id) {
-    const result = await this.knex("cms_article")
+    const result = await this.db("cms_article")
       .where("id", id)
       .increment("pv", 1);
     return result ? "success" : "fail";
@@ -438,7 +438,7 @@ class ArticleService extends Chan.Service {
 
   // 上一篇文章
   async pre(id, cid) {
-    return await this.knex("cms_article as a")
+    return await this.db("cms_article as a")
       .leftJoin("cms_category as c", "a.cid", "c.id")
       .where("a.id", "<", id)
       .andWhere("a.cid", cid)
@@ -449,7 +449,7 @@ class ArticleService extends Chan.Service {
 
   // 下一篇文章
   async next(id, cid) {
-    return await this.knex("cms_article as a")
+    return await this.db("cms_article as a")
       .leftJoin("cms_category as c", "a.cid", "c.id")
       .where("a.id", ">", id)
       .andWhere("a.cid", cid)
@@ -461,7 +461,7 @@ class ArticleService extends Chan.Service {
   // 获取栏目对应模型的字段配置
   async findField(cid) {
     try {
-      const modIdRow = await this.knex("cms_category")
+      const modIdRow = await this.db("cms_category")
         .where("id", cid)
         .whereNotNull("mid")
         .select("mid")
@@ -469,7 +469,7 @@ class ArticleService extends Chan.Service {
 
       let fields = [];
       if (modIdRow) {
-        fields = await this.knex("cms_field")
+        fields = await this.db("cms_field")
           .where("mid", modIdRow.mid)
           .select("cname", "ename", "type", "val", "defaultVal", "orderBy")
           .limit(12);
@@ -485,18 +485,18 @@ class ArticleService extends Chan.Service {
   // 统计数据
   async tongji() {
     const [week, message, tag, article] = await Promise.all([
-      this.knex("cms_article")
+      this.db("cms_article")
         .count("* as count")
         .where(
           "createdAt",
           ">=",
-          this.knex.raw("DATE_SUB(CURDATE(), INTERVAL 7 DAY)")
+          this.db.raw("DATE_SUB(CURDATE(), INTERVAL 7 DAY)")
         )
         .first(),
 
-      this.knex("cms_message").count("* as count").first(),
-      this.knex("cms_tag").count("* as count").first(),
-      this.knex("cms_article").count("* as count").first(),
+      this.db("cms_message").count("* as count").first(),
+      this.db("cms_tag").count("* as count").first(),
+      this.db("cms_article").count("* as count").first(),
     ]);
 
     return {

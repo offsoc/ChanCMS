@@ -4,7 +4,7 @@ const {
   common: { success, fail },
 } = Chan;
 
-let ClientController = {
+class ClientController extends Chan.Controller {
   // Express 路由：代理 IP 查询
   async ip(req, res, next) {
     const ip = req.query.ip || getIp(req);
@@ -31,7 +31,7 @@ let ClientController = {
         query: ip,
       });
     }
-  },
-};
+  }
+}
 
-export default ClientController;
+export default new ClientController();

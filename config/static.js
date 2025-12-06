@@ -10,3 +10,7 @@ export let statics = [
     maxAge: 0,
   },
 ];
+
+export default {
+  statics,
+};

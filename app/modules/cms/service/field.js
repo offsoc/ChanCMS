@@ -8,13 +8,13 @@ class FieldService extends Chan.Service {
       // 新增字的同时需要新增表
       const { mid, cname, ename, type, val, defaultVal, orderBy, length } =
         body;
-      await this.knex.transaction(async (trx) => {
+      await this.db.transaction(async (trx) => {
         // 查询模块名称
-        let table = await this.knex
+        let table = await this.db
           .raw("SELECT tableName FROM cms_model WHERE id=?", [mid])
           .transacting(trx);
         table = table[0][0].tableName;
-        const result = await this.knex(this.model)
+        const result = await this.db(this.tableName)
           .insert({ mid, cname, ename, type, val, defaultVal, orderBy, length })
           .transacting(trx);
 
@@ -87,7 +87,7 @@ class FieldService extends Chan.Service {
 
   async findByName(cname, ename) {
     try {
-      const result = await this.knex.raw(
+      const result = await this.db.raw(
         "SELECT cname,ename FROM cms_field WHERE cname=? or ename=? LIMIT 0,1",
         [cname, ename]
       );
@@ -101,7 +101,7 @@ class FieldService extends Chan.Service {
   // 删
   async delete(id) {
     try {
-      const data = await Chan.knex(this.model).where("id", "=", id).first();
+      const data = await Chan.knex(this.tableName).where("id", "=", id).first();
       if (!data) {
         return "fail";
       }
@@ -116,7 +116,7 @@ class FieldService extends Chan.Service {
         const sql_del = `ALTER TABLE ${table} DROP COLUMN ${ename}`;
         await Chan.knex.raw(sql_del).transacting(trx);
         // 删除字段
-        await Chan.knex(this.model).where("id", "=", id).del().transacting(trx);
+        await Chan.knex(this.tableName).where("id", "=", id).del().transacting(trx);
       });
       return true;
     } catch (err) {
@@ -132,16 +132,16 @@ class FieldService extends Chan.Service {
     delete body.old_ename;
     try {
       // 开始事务
-      await this.knex.transaction(async (trx) => {
+      await this.db.transaction(async (trx) => {
         // 更新记录
-        const result = await this.knex(this.model)
+        const result = await this.db(this.tableName)
           .where("id", "=", id)
           .update(body)
           .transacting(trx);
 
         if (result) {
           // 查询 cms_model 表来获取 tableName
-          const modelInfo = await this.knex
+          const modelInfo = await this.db
             .raw("SELECT tableName FROM cms_model WHERE id = ?", [body.mid])
             .transacting(trx);
           const [[{ tableName }]] = modelInfo;
@@ -169,7 +169,7 @@ class FieldService extends Chan.Service {
 
           // 使用 ?? 安全引用表名、旧字段名、新字段名
           const sql = `ALTER TABLE ?? CHANGE ?? ?? ${sqlType}`;
-          await this.knex
+          await this.db
             .raw(sql, [tableName, old_ename, ename])
             .transacting(trx);
         }
@@ -185,11 +185,11 @@ class FieldService extends Chan.Service {
   // 获取全量field，默认100个cur = 1,
   async list(mid, cur = 1, pageSize = 100) {
     try {
-      const total = await this.knex(this.model).count("id", { as: "count" });
+      const total = await this.db(this.tableName).count("id", { as: "count" });
       const offset = parseInt((cur - 1) * pageSize);
-      const list = await this.knex
+      const list = await this.db
         .select(["id", "cname", "ename", "orderBy"])
-        .from(this.model)
+        .from(this.tableName)
         .where("mid", "=", mid)
         .limit(pageSize)
         .offset(offset)
@@ -197,7 +197,7 @@ class FieldService extends Chan.Service {
       const count = total[0].count || 1;
 
       // 查询模块名称
-      const models = await this.knex.raw(
+      const models = await this.db.raw(
         "SELECT model,tableName FROM cms_model WHERE id=?",
         [mid]
       );

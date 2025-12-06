@@ -4,7 +4,7 @@ const {
   common: { success, fail },
 } = Chan;
 
-let TokenController = {
+class TokenController extends Chan.Controller {
   // 更新token时间
   async update(res, req, next) {
     try {
@@ -15,7 +15,7 @@ let TokenController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 校验token是否正确
   async check(req, res, next) {
@@ -26,7 +26,7 @@ let TokenController = {
     } catch (err) {
       next(err);
     }
-  },
-};
+  }
+}
 
-export default TokenController;
+export default new TokenController();

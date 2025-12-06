@@ -1,11 +1,13 @@
-import dayjs from "dayjs";
 const {
   config,
-  helper: { getToken },
+  helper: { getToken, formatDateFields },
   common: { success },
 } = Chan;
 import loginLog from "../service/loginLog.js";
-let LoginLogController = {
+class LoginLogController extends Chan.Controller {
+  constructor() {
+    super();
+  }
   // 增
   async create(req, res, next) {
     try {
@@ -20,7 +22,7 @@ let LoginLogController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 删除
   async delete(req, res, next) {
@@ -30,21 +32,19 @@ let LoginLogController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 列表
   async list(req, res, next) {
     try {
       const { pageSize, cur } = req.query;
       let result = await loginLog.list(cur, pageSize);
-      result.data.list.forEach((ele) => {
-        ele.createdAt = dayjs(ele.createdAt).format("YYYY-MM-DD HH:mm:ss");
-      });
+      result.data.list = formatDateFields(result.data.list);
       res.json({ ...success, data: result.data });
     } catch (err) {
       next(err);
     }
-  },
-};
+  }
+}
 
-export default LoginLogController;
+export default new LoginLogController();

@@ -6,7 +6,7 @@ class SiteService extends Chan.Service {
   // 基本信息
   async info() {
     try {
-      let res = await this.one();
+      let res = await this.findOne();
       return res;
     } catch (err) {
       console.error(err);

@@ -5,7 +5,7 @@ const {
 } = Chan;
 import SysRole from "../service/SysRole.js";
 
-let SysRoleController = {
+class SysRoleController extends Chan.Controller {
   async list(req, res, next) {
     try {
       const query = req.query;
@@ -14,7 +14,7 @@ let SysRoleController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
   // 增
   async create(req, res, next) {
     try {
@@ -24,7 +24,7 @@ let SysRoleController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 查
   async detail(req, res, next) {
@@ -35,7 +35,7 @@ let SysRoleController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 删除
   async delete(req, res, next) {
@@ -46,7 +46,7 @@ let SysRoleController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 改
   async update(req, res, next) {
@@ -57,7 +57,7 @@ let SysRoleController = {
     } catch (err) {
       next(err);
     }
-  },
-};
+  }
+}
 
-export default SysRoleController;
+export default new SysRoleController();

@@ -1,10 +1,13 @@
-import dayjs from "dayjs";
 const {
   common: { success, fail },
+  helper: { formatDateFields },
 } = Chan;
 
 import slide from "../service/slide.js";
-let SlideController = {
+class SlideController extends Chan.Controller {
+  constructor() {
+    super();
+  }
   // 增
   async create(req, res, next) {
     try {
@@ -14,7 +17,7 @@ let SlideController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 删除
   async delete(req, res, next) {
@@ -25,7 +28,7 @@ let SlideController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 改
   async update(req, res, next) {
@@ -36,7 +39,7 @@ let SlideController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 查
   async detail(req, res, next) {
@@ -47,35 +50,31 @@ let SlideController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 搜索
   async search(req, res, next) {
     try {
       const { cur, keyword, cid = 0, pageSize = 10 } = req.query;
       const data = await slide.search(keyword, cur, pageSize, +cid);
-      data.list.forEach((ele) => {
-        ele.updatedAt = dayjs(ele.updatedAt).format("YYYY-MM-DD HH:mm:ss");
-      });
+      data.list = formatDateFields(data.list);
       res.json({ ...success, data: data });
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 列表
   async list(req, res, next) {
     try {
       const { cur, cid = 0, pageSize = 10 } = req.query;
       const result = await slide.list(cur, pageSize, cid);
-      result.data.list.forEach((ele) => {
-        ele.updatedAt = dayjs(ele.updatedAt).format("YYYY-MM-DD HH:mm:ss");
-      });
+      result.data.list = formatDateFields(result.data.list);
       res.json({ ...success, data: result.data });
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 上传图片
   async upload(req, res, next) {
@@ -95,7 +94,7 @@ let SlideController = {
     } catch (err) {
       next(err);
     }
-  },
-};
+  }
+}
 
-export default SlideController;
+export default new SlideController();

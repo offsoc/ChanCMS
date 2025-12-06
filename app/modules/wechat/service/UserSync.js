@@ -88,10 +88,7 @@ class UserSyncService extends Chan.Service {
       // 获取完整用户信息
       const user = await trx("user").where("id", userId).first();
 
-      return {
-        user,
-        socialRecord: socialRecord || { platform: "wechat", openid, unionid },
-      };
+      return { userId, openid, unionid };;
     });
   }
 }

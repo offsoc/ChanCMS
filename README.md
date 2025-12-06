@@ -109,6 +109,7 @@ ChanCMS是一款基于Node、Express5、MySQL、Vue3研发的高质量实用型C
 
 ### 案例🍅️
 
+* [广东数智云科](http://ifckj.com/)
 * [前行者 EWEADN](https://www.eweadn.cn)
 * [北京辉达科技](http://www.huidaep.com/ )
 * [北京诺丰科技](http://www.novontrade.com/ )
@@ -145,7 +146,6 @@ ChanCMS是一款基于Node、Express5、MySQL、Vue3研发的高质量实用型C
 * **官网文档 ：<https://www.chancms.top/docs/index.html>**
 * **官网演示站：<https://vip.chancms.top>**
 * **视频教程：<https://space.bilibili.com/1885628820>**
-
 
 ## ❤️项目关注
 

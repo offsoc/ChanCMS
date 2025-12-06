@@ -19,7 +19,7 @@ import {
   parseJsonFields,
 } from "../utils/index.js";
 
-let HomeController = {
+class HomeController extends Chan.Controller {
   // 首页
   async index(req, res, next) {
     try {
@@ -31,7 +31,7 @@ let HomeController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   // 列表页
   async list(req, res, next) {
@@ -59,7 +59,7 @@ let HomeController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   // 详情页
   async article(req, res, next) {
@@ -102,7 +102,7 @@ let HomeController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   // 单页 ，分两种情况，一种单个单页，一个
   async page(req, res, next) {
@@ -150,7 +150,7 @@ let HomeController = {
       console.error(`[${new Date().toISOString()}] Page Error:`, error.stack);
       next(error);
     }
-  },
+  }
 
   // 搜索页
   async search(req, res, next) {
@@ -167,7 +167,7 @@ let HomeController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   // tag
   async tag(req, res, next) {
@@ -185,7 +185,7 @@ let HomeController = {
       console.error(error);
       next(error);
     }
-  },
-};
+  }
+}
 
-export default HomeController;
+export default new HomeController();

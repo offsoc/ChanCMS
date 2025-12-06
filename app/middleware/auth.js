@@ -2,18 +2,14 @@ const {
   config: { JWT_SECRET, JWT_EXPIRES_IN, JWT_REFRESH, APP_DEBUG },
   helper: { setToken, getToken },
 } = Chan;
-import configService from "../modules/base/service/Config.js";
+import SysMenu from "../modules/base/service/SysMenu.js";
 
 const REFRESH_THRESHOLD = 30 * 60; // 30分钟
 // 统一响应处理函数，减少重复代码
 const sendResponse = (res, code, message, data = null) => {
   res.json({ code, msg: message, data });
 };
-export default (permsStr) => {
-  if (permsStr && typeof permsStr !== "string") {
-    throw new Error("权限参数必须是字符串");
-  }
-
+export default () => {
   return async (req, res, next) => {
     try {
       const token = req.headers.token || "";
@@ -53,16 +49,24 @@ export default (permsStr) => {
         }
       }
 
-      // 7. 验证权限
-      if (permsStr) {
-        const permsRes = await configService.allPerms(uid);
-        if (!permsRes.some((item) => item.perms === permsStr)) {
-          return res.json({ code: 402, msg: "暂无权限" });
-        }
-      }
-
-      // 8. 验证通过，将用户信息存入req中，供后续中间件使用
+      // 7. 验证通过，将用户信息存入 req 中
       req.user = { username, uid };
+
+      // 8. 计算当前请求的权限标识（只计算一次）
+      const perms = req.originalUrl.split('?')[0].split("/").filter(Boolean).join(":");
+
+      // 确保权限数组存在
+      if (!req.user.perms) {
+        const permsRes = await SysMenu.allPerms(uid);
+        req.user.perms =  permsRes.map(item => item.perms)           // 必须提取字段
+        .filter(perm => typeof perm === 'string' && perm.trim().length > 0); // 至少过滤空值;
+      }
+      // 权限检查：精确匹配（最安全）
+      const hasPermission = req.user.perms.some((item) => item === perms);
+      if (!hasPermission && perms !== 'base:menu:allRouter') {
+       console.log("error-->", perms);
+       return res.json({ code: 402, msg: "暂无权限" });
+      }
 
       // 9. 继续处理请求
       await next();

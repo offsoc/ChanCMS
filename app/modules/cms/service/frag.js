@@ -44,12 +44,12 @@ class FragService extends Chan.Service {
   // 获取全量frag，默认100个cur = 1,
   async list(cur = 1) {
     try {
-      const total = await this.knex(this.model).count("id", { as: "count" });
-      const offset = parseInt((cur - 1) * this.pageSize);
-      const list = await this.knex
+      const total = await this.db(this.tableName).count("id", { as: "count" });
+      const offset = parseInt((cur - 1) * this.limit);
+      const list = await this.db
         .select(["name", "mark", "content"])
-        .from(this.model)
-        .limit(this.pageSize)
+        .from(this.tableName)
+        .limit(this.limit)
         .offset(offset)
         .orderBy("id", "desc");
 
@@ -87,21 +87,21 @@ class FragService extends Chan.Service {
     try {
       // 查询个数
       const total = key
-        ? await this.knex(this.model)
+        ? await this.db(this.tableName)
             .whereRaw("name COLLATE utf8mb4_general_ci LIKE ?", [`%${key}%`])
             .count("id", { as: "count" })
-        : await this.knex(this.model).count("id", { as: "count" });
+        : await this.db(this.tableName).count("id", { as: "count" });
       // 查询个数
       const offset = parseInt((cur - 1) * pageSize);
       const list = key
-        ? await this.knex(this.model)
-            .select(["id", "name", "mark"])
+        ? await this.db(this.tableName)
+            .select(["id", "name", "mark", "updatedAt"])
             .whereRaw("name COLLATE utf8mb4_general_ci LIKE ?", [`%${key}%`])
             .limit(pageSize)
             .offset(offset)
             .orderBy("id", "desc")
-        : await this.knex(this.model)
-            .select(["id", "name", "mark"])
+        : await this.db(this.tableName)
+            .select(["id", "name", "mark", "updatedAt"])
             .limit(pageSize)
             .offset(offset)
             .orderBy("id", "desc");

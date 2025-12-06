@@ -9,7 +9,7 @@ class ApiService extends Chan.Service {
    */
   async category() {
     try {
-      return await this.knex("cms_category")
+      return await this.db("cms_category")
         .select([
           "id",
           "pid",
@@ -56,7 +56,7 @@ class ApiService extends Chan.Service {
         "c.path",
       ];
 
-      const query = this.knex
+      const query = this.db
         .select(columns)
         .from("cms_article AS a")
         .leftJoin("cms_category AS c", "a.cid", "c.id")
@@ -86,7 +86,7 @@ class ApiService extends Chan.Service {
   async getArticleListByCid(cid, len = 5, attr = "") {
     try {
       // 获取所有子栏目ID
-      const res = await this.knex
+      const res = await this.db
         .select("id")
         .from("cms_category")
         .where("pid", cid);
@@ -94,7 +94,7 @@ class ApiService extends Chan.Service {
       const ids = [cid, ...res.map((item) => item.id)];
 
       // 构建查询
-      let queryBuilder = this.knex
+      let queryBuilder = this.db
         .select(
           "a.id",
           "a.title",
@@ -131,7 +131,7 @@ class ApiService extends Chan.Service {
    */
   async getArticleTag(id) {
     try {
-      return await this.knex("cms_article AS a")
+      return await this.db("cms_article AS a")
         .select("a.cid", "t.id", "t.name", "t.path")
         .rightJoin("cms_tag AS t", "t.id", "=", "a.tagId")
         .where("a.id", id)
@@ -151,7 +151,7 @@ class ApiService extends Chan.Service {
    */
   async getAllParentCategory(idArray = []) {
     try {
-      return await this.knex("cms_category")
+      return await this.db("cms_category")
         .select([
           "id",
           "pid",
@@ -180,7 +180,7 @@ class ApiService extends Chan.Service {
    */
   async getTagsById(id) {
     try {
-      return await this.knex("cms_article AS a")
+      return await this.db("cms_article AS a")
         .select("a.cid", "t.id", "t.name", "t.path")
         .rightJoin("cms_tag AS t", "t.id", "=", "a.tagId")
         .where("a.id", id)
@@ -201,7 +201,7 @@ class ApiService extends Chan.Service {
    */
   async pv(len = 10, id = "") {
     try {
-      let query = this.knex
+      let query = this.db
         .select(
           "a.id",
           "a.title",
@@ -218,7 +218,7 @@ class ApiService extends Chan.Service {
         .where("a.status", 0);
 
       if (id) {
-        const ids = await this.knex("cms_category")
+        const ids = await this.db("cms_category")
           .select("id")
           .where("pid", id)
           .pluck("id");
@@ -244,7 +244,7 @@ class ApiService extends Chan.Service {
    */
   async articleImg({ len, id, attr }) {
     try {
-      let query = this.knex
+      let query = this.db
         .select(
           "a.id",
           "a.title",
@@ -262,7 +262,7 @@ class ApiService extends Chan.Service {
         .where("a.status", 0);
 
       if (id) {
-        const ids = await this.knex("cms_category")
+        const ids = await this.db("cms_category")
           .select("id")
           .where("pid", id)
           .pluck("id");
@@ -295,11 +295,11 @@ class ApiService extends Chan.Service {
       const start = (current - 1) * pageSize;
 
       // 获取所有子栏目ID
-      const res = await this.knex("cms_category").select("id").where("pid", id);
+      const res = await this.db("cms_category").select("id").where("pid", id);
       const ids = [id, ...res.map((item) => item.id)];
 
       // 查询总数
-      const total = await this.knex("cms_article")
+      const total = await this.db("cms_article")
         .count("id as count")
         .whereIn("cid", ids)
         .where("status", 0)
@@ -308,7 +308,7 @@ class ApiService extends Chan.Service {
       const count = total.count || 1;
 
       // 查询文章列表
-      const result = await this.knex
+      const result = await this.db
         .select(
           "a.id",
           "a.title",
@@ -355,7 +355,7 @@ class ApiService extends Chan.Service {
       const start = (current - 1) * pageSize;
 
       // 查询总数
-      const total = await this.knex("cms_article as a")
+      const total = await this.db("cms_article as a")
         .join("cms_category as c", "a.cid", "c.id")
         .whereExists(function () {
           this.select(1)
@@ -366,7 +366,7 @@ class ApiService extends Chan.Service {
         .count("* as total");
 
       // 查询文章列表
-      const result = await this.knex("cms_article as a")
+      const result = await this.db("cms_article as a")
         .select(
           "a.id",
           "a.title",
@@ -418,7 +418,7 @@ class ApiService extends Chan.Service {
   async banner(cur = 1, pageSize = 10) {
     try {
       const offset = parseInt((cur - 1) * pageSize);
-      return await this.knex
+      return await this.db
         .select(["id", "title", "imgUrl", "linkUrl"])
         .from("cms_slide")
         .limit(pageSize)
@@ -438,14 +438,14 @@ class ApiService extends Chan.Service {
   async article(id) {
     try {
       // 查询文章
-      const data = await this.knex("cms_article").where("id", "=", id).first();
+      const data = await this.db("cms_article").where("id", "=", id).first();
 
       if (!data || !data.cid) {
         return false;
       }
 
       // 通过栏目ID查找模型ID
-      const modId = await this.knex("cms_category")
+      const modId = await this.db("cms_category")
         .select("mid")
         .where("id", data.cid)
         .first();
@@ -453,14 +453,14 @@ class ApiService extends Chan.Service {
       let field = {};
       if (modId && modId.mid !== "0") {
         // 通过模型查找表名
-        const tableName = await this.knex("cms_model")
+        const tableName = await this.db("cms_model")
           .select("tableName")
           .where("id", modId.mid)
           .first();
 
         // 通过表名查找文章扩展字段
         field =
-          (await this.knex(tableName.tableName).where("aid", id).first()) || {};
+          (await this.db(tableName.tableName).where("aid", id).first()) || {};
       }
 
       return { ...data, field };
@@ -479,7 +479,7 @@ class ApiService extends Chan.Service {
    */
   async prev({ id, cid }) {
     try {
-      const result = await this.knex.raw(
+      const result = await this.db.raw(
         `SELECT a.id,a.title,c.name,c.path FROM cms_article a LEFT JOIN cms_category c ON a.cid=c.id  WHERE a.id<? AND a.cid=? ORDER BY id DESC LIMIT 1`,
         [id, cid]
       );
@@ -499,7 +499,7 @@ class ApiService extends Chan.Service {
    */
   async next({ id, cid }) {
     try {
-      const result = await this.knex.raw(
+      const result = await this.db.raw(
         `SELECT a.id,a.title,c.name,c.path FROM cms_article a LEFT JOIN cms_category c ON a.cid=c.id WHERE a.id>? AND a.cid=? LIMIT 1`,
         [id, cid]
       );
@@ -521,7 +521,7 @@ class ApiService extends Chan.Service {
   async search(key = "", cur = 1, pageSize = 10, cid = 0) {
     try {
       // 查询总数
-      let countQuery = this.knex("cms_article as a")
+      let countQuery = this.db("cms_article as a")
         .leftJoin("cms_category as c", "a.cid", "c.id")
         .where("a.title", "LIKE", `%${key}%`)
         .count("* as count");
@@ -535,7 +535,7 @@ class ApiService extends Chan.Service {
 
       // 查询列表
       const offset = parseInt((cur - 1) * pageSize);
-      let listQuery = this.knex("cms_article as a")
+      let listQuery = this.db("cms_article as a")
         .select(
           "a.id",
           "a.title",
@@ -580,7 +580,7 @@ class ApiService extends Chan.Service {
    */
   async pvadd(id) {
     try {
-      const result = await this.knex("cms_article")
+      const result = await this.db("cms_article")
         .where("id", id)
         .increment("pv", 1);
       return !!result;

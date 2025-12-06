@@ -5,7 +5,7 @@ class SysAppService extends Chan.Service {
 
   async find() {
     try {
-      let res = await this.one();
+      let res = await this.findOne();
       return res;
     } catch (err) {
       console.error(err);

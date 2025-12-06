@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 const {
   config,
   helper: { setToken, getToken },
@@ -7,7 +6,7 @@ const {
 
 import ConfigType from "../service/ConfigType.js";
 
-let ConfigTypeController = {
+class ConfigTypeController extends Chan.Controller {
   async list(req, res, next) {
     try {
       const query = req.query || {};
@@ -16,7 +15,7 @@ let ConfigTypeController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
   // 增
   async create(req, res, next) {
     try {
@@ -26,7 +25,7 @@ let ConfigTypeController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 查
   async detail(req, res, next) {
@@ -38,7 +37,7 @@ let ConfigTypeController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   //删除
   async delete(req, res, next) {
@@ -49,7 +48,7 @@ let ConfigTypeController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 改
   async update(req, res, next) {
@@ -60,7 +59,7 @@ let ConfigTypeController = {
     } catch (err) {
       next(err);
     }
-  },
-};
+  }
+}
 
-export default ConfigTypeController;
+export default new ConfigTypeController();

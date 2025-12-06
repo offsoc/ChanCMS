@@ -106,7 +106,7 @@ class SysMenuService extends Chan.Service {
       // Step 2: 根据 role_id 查找 menu_id
       const menus = await Chan.knex("sys_role_menu")
         .select("menu_id")
-        .whereIn("role_id", [roleId]);
+        .whereIn("role_id", roleId);
 
       const menuIds = menus.map((menu) => menu.menu_id);
 
@@ -164,7 +164,7 @@ class SysMenuService extends Chan.Service {
     try {
       let res = await this.query({
         current: 1,
-        pageSize: this.pageSize,
+        pageSize: this.limit,
         query,
         field: [
           "id",

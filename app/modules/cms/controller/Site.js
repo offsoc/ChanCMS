@@ -3,7 +3,7 @@ const {
   config,
 } = Chan;
 import Site from "../service/Site.js";
-let SiteController = {
+class SiteController extends Chan.Controller {
   // 查
   async info(req, res, next) {
     try {
@@ -12,7 +12,7 @@ let SiteController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 改
   async update(req, res, next) {
@@ -23,7 +23,7 @@ let SiteController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 获取磁盘信息
   async runEnv(req, res, next) {
@@ -32,7 +32,7 @@ let SiteController = {
     } catch (err) {
       next(err);
     }
-  },
-};
+  }
+}
 
-export default SiteController;
+export default new SiteController();

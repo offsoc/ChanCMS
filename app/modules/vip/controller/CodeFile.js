@@ -3,7 +3,7 @@ const {
   common: { success, fail },
 } = Chan;
 import path from "path";
-let CodeFileController = {
+class CodeFileController extends Chan.Controller {
   // 获取站点信息
   async tree(req, res, next) {
     try {
@@ -28,7 +28,7 @@ let CodeFileController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   async oss(req, res, next) {
     try {
@@ -52,7 +52,7 @@ let CodeFileController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   async content(req, res, next) {
     try {
@@ -66,7 +66,7 @@ let CodeFileController = {
       console.error(error);
       next(error);
     }
-  },
+  }
 
   async save(req, res, next) {
     try {
@@ -80,7 +80,7 @@ let CodeFileController = {
       console.error(error);
       next(error);
     }
-  },
-};
+  }
+}
 
-export default CodeFileController;
+export default new CodeFileController();

@@ -44,7 +44,7 @@ class ConfigTypeService extends Chan.Service {
     try {
       let res = await this.query({
         current: 1,
-        pageSize: this.pageSize,
+        pageSize: this.limit,
         query,
         field: ["id", "type_code", "type_name", "status", "remark"],
       });
@@ -58,7 +58,7 @@ class ConfigTypeService extends Chan.Service {
   // 增
   async create(body) {
     try {
-      const res = await this.knex.insert(body);
+      const res = await super.insert(body);
       return res;
     } catch (err) {
       console.error(err);

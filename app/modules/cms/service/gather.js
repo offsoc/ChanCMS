@@ -55,19 +55,42 @@ class GatherService extends Chan.Service {
     }
   }
 
-  // 获取全量gather，默认100个cur = 1,
-  async list(cur = 1, pageSize = 100) {
+  // 列表
+  async list(cur = 1, pageSize = 10) {
+    const page = Math.max(1, parseInt(cur));
+    const limit = Math.min(pageSize, 100); // 防止过大 pageSize
+    const offset = (page - 1) * limit;
+
     try {
-      let res = await this.query({
-        current: cur,
-        pageSize: pageSize,
-        query: {},
-        field: ["*"],
-      });
-      return res;
+      const [{ count }] = await this.db(this.tableName).count("id as count");
+      const list = await this.db(this.tableName)
+        .select(
+          "plus_gather.id",
+          "plus_gather.taskName",
+          "plus_gather.targetUrl",
+          "plus_gather.parseData",
+          "plus_gather.cid",
+          "plus_gather.status",
+          "plus_gather.createdAt",
+          "plus_gather.updatedAt",
+          "cms_category.name as category"
+        )
+        .innerJoin("cms_category", "plus_gather.cid", "cms_category.id")
+        .limit(limit)
+        .offset(offset)
+        .orderBy("plus_gather.id", "desc");
+
+      const total = Math.ceil(count / limit);
+
+      return {
+        count,
+        total,
+        current: page,
+        list,
+      };
     } catch (err) {
-      console.error(err);
-      throw err;
+      console.error(`[CollectService.list] 查询失败`, err);
+      throw { code: "DB_QUERY_ERROR", message: err.message };
     }
   }
 

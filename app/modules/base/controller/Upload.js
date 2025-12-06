@@ -21,7 +21,7 @@ const handleResponse = (req, files) => {
   return isArray ? result : result[0];
 };
 
-let UploadController = {
+class UploadController extends Chan.Controller {
   // 单文件上传
   async uploadFile(req, res, next) {
     try {
@@ -33,7 +33,7 @@ let UploadController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 多文件上传
   async uploadFiles(req, res, next) {
@@ -46,7 +46,7 @@ let UploadController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 单图上传
   async uploadImg(req, res, next) {
@@ -63,7 +63,7 @@ let UploadController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 多图上传
   async uploadImgs(req, res, next) {
@@ -77,7 +77,6 @@ let UploadController = {
     } catch (err) {
       next(err);
     }
-  },
-
-};
-export default UploadController;
+  }
+}
+export default new UploadController();

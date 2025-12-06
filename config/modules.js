@@ -8,3 +8,7 @@ export const modules = [
   "proxy",
   "wechat",
 ];
+
+export default {
+  modules,
+};

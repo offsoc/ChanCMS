@@ -4,7 +4,7 @@ const {
   common: { success, getHtmlFilesSync },
 } = Chan;
 import sysApp from "../service/sysApp.js";
-let SysAppController = {
+class SysAppController extends Chan.Controller {
   // 查
   async find(req, res, next) {
     try {
@@ -13,7 +13,7 @@ let SysAppController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 查
   async getViews(req, res, next) {
@@ -25,7 +25,7 @@ let SysAppController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   /**
    * @description 获取模板文件
@@ -38,7 +38,7 @@ let SysAppController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // app配置
   // async config(req, res, next) {
@@ -59,7 +59,7 @@ let SysAppController = {
     } catch (err) {
       next(err);
     }
-  },
-};
+  }
+}
 
-export default SysAppController;
+export default new SysAppController();

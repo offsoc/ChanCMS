@@ -12,3 +12,7 @@ export const WECHAT = {
   MINIPROGRAM_APPID: process.env.MINIPROGRAM_APPID,
   MINIPROGRAM_APPSECRET: process.env.MINIPROGRAM_APPSECRET,
 };
+
+export default {
+  WECHAT,
+};

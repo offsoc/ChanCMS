@@ -4,3 +4,7 @@ export const cors = {
   credentials: true, // 允许携带 cookies 等凭据（如需）
   maxAge: 86400, // 预检请求的缓存时间（秒），减少重复验证
 };
+
+export default {
+  cors,
+};

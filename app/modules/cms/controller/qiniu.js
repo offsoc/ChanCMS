@@ -75,7 +75,7 @@ const initConfig = async () => {
     throw error; // 抛出错误让上层处理
   }
 };
-const QiniuController = {
+class QiniuController extends Chan.Controller {
   // 配置项使用私有变量，避免直接修改
 
   /**
@@ -91,7 +91,7 @@ const QiniuController = {
     } catch (error) {
       next(error);
     }
-  },
+  }
 
   /**
    * 服务端直传七牛云
@@ -152,7 +152,7 @@ const QiniuController = {
     } catch (error) {
       next(error);
     }
-  },
-};
+  }
+}
 
-export default QiniuController;
+export default new QiniuController();

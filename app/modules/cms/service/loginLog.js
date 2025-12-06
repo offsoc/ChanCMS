@@ -18,7 +18,7 @@ class LoginLogService extends Chan.Service {
   async delete() {
     try {
       // 获取最新的100条记录的ID
-      const recentLogIds = await Chan.knex(this.model)
+      const recentLogIds = await Chan.knex(this.tableName)
         .select("id")
         .orderBy("createdAt", "desc")
         .limit(100);
@@ -27,7 +27,7 @@ class LoginLogService extends Chan.Service {
       const idsToKeep = recentLogIds.map((row) => row.id);
 
       // 删除不在这些ID中的所有记录
-      const res = await Chan.knex(this.model).whereNotIn("id", idsToKeep).del();
+      const res = await Chan.knex(this.tableName).whereNotIn("id", idsToKeep).del();
       return res;
     } catch (err) {
       console.error(err);

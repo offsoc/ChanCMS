@@ -4,7 +4,7 @@ const {
   },
 } = Chan;
 import field from "../service/field.js";
-let FieldController  = {
+class FieldController extends Chan.Controller {
   // 增
   async create(req, res, next) {
     try {
@@ -19,7 +19,7 @@ let FieldController  = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
    
 
@@ -32,7 +32,7 @@ let FieldController  = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 改
   async update(req, res, next) {
@@ -43,7 +43,7 @@ let FieldController  = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 查
   async detail(req, res, next) {
@@ -54,7 +54,7 @@ let FieldController  = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 列表
   async list(req, res, next) {
@@ -68,4 +68,4 @@ let FieldController  = {
   }
 }
 
-export default FieldController;
+export default new FieldController();

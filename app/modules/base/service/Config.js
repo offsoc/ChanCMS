@@ -62,7 +62,7 @@ class Config extends Chan.Service {
     try {
       let res = await this.query({
         current: 1,
-        pageSize: this.pageSize,
+        pageSize: this.limit,
         query,
         field,
       });
@@ -87,7 +87,7 @@ class Config extends Chan.Service {
   async update(body) {
     const { id, ...params } = body;
     try {
-      const res = await this.update({ query: { id: id }, params });
+      const res = await super.update({ query: { id: id }, params });
       return res;
     } catch (err) {
       console.error(err);
@@ -97,7 +97,7 @@ class Config extends Chan.Service {
 
   async updateMany(updates = []) {
     try {
-      const res = await this.updateMany(updates);
+      const res = await super.updateMany(updates);
       return res;
     } catch (err) {
       console.error(err);

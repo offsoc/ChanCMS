@@ -1,12 +1,14 @@
 export const APP_NAME = "ChanCMS";
-export const APP_VERSION = "3.3.5";
-export const APP_VERSION_TIME = "2025-11-21";
+export const APP_VERSION = "3.3.6";
+export const APP_VERSION_TIME = "2025-11-29";
 export const APP_AUTHOR_EMAIL = "867528315@qq.com";
 export const APP_AUTHOR_WECHAT = "yanyutao2014";
 export const PORT = process.env.PORT || "3000";
 export const BODY_LIMIT = process.env.BODY_LIMIT || "100kb";
 export const NODE_ENV = process.env.NODE_ENV || "development";
 export const APP_DEBUG = process.env.APP_DEBUG === "true";
+export const PAGE_SIZE = process.env.PAGE_SIZE || 20;
+export const LIMIT_MAX = process.env.LIMIT_MAX || 300;
 
 export default {
   APP_NAME,
@@ -18,4 +20,6 @@ export default {
   BODY_LIMIT,
   NODE_ENV,
   APP_DEBUG,
+  PAGE_SIZE,
+  LIMIT_MAX,
 };

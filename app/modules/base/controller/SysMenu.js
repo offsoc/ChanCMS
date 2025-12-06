@@ -4,7 +4,7 @@ const {
   common: { success, fail },
 } = Chan;
 import SysMenu from "../service/SysMenu.js";
-let SysMenuController = {
+class SysMenuController extends Chan.Controller {
   async list(req, res, next) {
     try {
       const query = req.query;
@@ -13,7 +13,7 @@ let SysMenuController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   async allRouter(req, res, next) {
     try {
@@ -31,7 +31,7 @@ let SysMenuController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   async allPerms(req, res, next) {
     try {
@@ -49,7 +49,7 @@ let SysMenuController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
   // 增
   async create(req, res, next) {
     try {
@@ -59,7 +59,7 @@ let SysMenuController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 查
   async detail(req, res, next) {
@@ -70,7 +70,7 @@ let SysMenuController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   //删除
   async delete(req, res, next) {
@@ -81,7 +81,7 @@ let SysMenuController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 改
   async update(req, res, next) {
@@ -92,7 +92,7 @@ let SysMenuController = {
     } catch (err) {
       next(err);
     }
-  },
-};
+  }
+}
 
-export default SysMenuController;
+export default new SysMenuController();

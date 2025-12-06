@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 const {
   config: { EMAIL, USER_SALT, JWT_SECRET, JWT_EXPIRES_IN },
   helper: { setToken, getToken, genCode, LogError },
@@ -8,7 +7,7 @@ const {
 import User from "../service/User.js";
 import bcrypt from "bcryptjs";
 
-let UserController = {
+class UserController extends Chan.Controller {
   async sendEmail(req, res, next) {
     const { email, code, type } = req.body;
     let emailcode = genCode(code, EMAIL.CODE);
@@ -19,7 +18,7 @@ let UserController = {
     }
 
     res.json({ ...success, data: "邮件发送成功" });
-  },
+  }
 
   async login(req, res, next) {
     try {
@@ -52,7 +51,7 @@ let UserController = {
       console.error("SysUserController.login-->", err);
       next(err);
     }
-  },
+  }
 
   // 注册
   async register(req, res, next) {
@@ -69,7 +68,7 @@ let UserController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   async checkEmail(req, res, next) {
     try {
@@ -77,7 +76,7 @@ let UserController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 查
   async detail(req, res, next) {
@@ -88,7 +87,7 @@ let UserController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   //删除
   async delete(req, res, next) {
@@ -99,7 +98,7 @@ let UserController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   async resetPass(req, res, next) {
     try {
@@ -119,7 +118,7 @@ let UserController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   async updateUser(req, res, next) {
     try {
@@ -131,7 +130,7 @@ let UserController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 改
   async updatePass(req, res, next) {
@@ -157,7 +156,7 @@ let UserController = {
     } catch (err) {
       next(err);
     }
-  },
-};
+  }
+}
 
-export default UserController;
+export default new UserController();

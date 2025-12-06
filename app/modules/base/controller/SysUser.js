@@ -1,4 +1,3 @@
-import dayjs from "dayjs";
 const {
   config,
   helper: { setToken, getToken, getIp },
@@ -7,7 +6,7 @@ const {
 import SysUser from "../service/SysUser.js";
 import SysMenu from "../service/SysMenu.js";
 import bcrypt from "bcryptjs";
-let SysUserController = {
+class SysUserController extends Chan.Controller {
   async login(req, res, next) {
     try {
       let { username, password, f, i } = req.body;
@@ -42,7 +41,7 @@ let SysUserController = {
       console.error("SysUserController.login-->", err);
       next(err);
     }
-  },
+  }
 
   async list(req, res, next) {
     try {
@@ -52,7 +51,7 @@ let SysUserController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
   // 增
   async create(req, res, next) {
     try {
@@ -66,7 +65,7 @@ let SysUserController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 查
   async detail(req, res, next) {
@@ -85,7 +84,7 @@ let SysUserController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   //删除
   async delete(req, res, next) {
@@ -96,7 +95,7 @@ let SysUserController = {
     } catch (err) {
       next(err);
     }
-  },
+  }
 
   // 改
   async update(req, res, next) {
@@ -112,7 +111,7 @@ let SysUserController = {
     } catch (err) {
       next(err);
     }
-  },
-};
+  }
+}
 
-export default SysUserController;
+export default new SysUserController();

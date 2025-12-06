@@ -12,7 +12,7 @@ class SysRoleMenuService extends Chan.Service {
     try {
       let res = await this.query({
         current: 1,
-        pageSize: this.pageSize,
+        pageSize: this.limit,
         query,
         field: ["role_id", "menu_id"],
       });

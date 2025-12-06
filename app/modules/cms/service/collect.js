@@ -89,8 +89,8 @@ class CollectService extends Chan.Service {
     const offset = (page - 1) * limit;
 
     try {
-      const [{ count }] = await this.knex(this.model).count("id as count");
-      const list = await this.knex(this.model)
+      const [{ count }] = await this.db(this.tableName).count("id as count");
+      const list = await this.db(this.tableName)
         .select(
           "plus_collect.id",
           "plus_collect.taskName",
@@ -128,7 +128,7 @@ class CollectService extends Chan.Service {
    */
   async detail(id) {
     try {
-      const data = await this.knex(this.model)
+      const data = await this.db(this.tableName)
         .where("id", id)
         .select([
           "id",
@@ -171,11 +171,11 @@ class CollectService extends Chan.Service {
       const safeKey = key.replace(/[%_\\]/g, (match) => `\\${match}`);
       const likePattern = `%${safeKey}%`;
 
-      const [{ count }] = await this.knex(this.model)
+      const [{ count }] = await this.db(this.tableName)
         .count("id as count")
         .where("taskName", "like", likePattern);
 
-      const list = await this.knex(this.model)
+      const list = await this.db(this.tableName)
         .select("id", "taskName", "targetUrl", "updatedAt", "charset", "status")
         .where("taskName", "like", likePattern)
         .orderBy("id", "desc")

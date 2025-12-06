@@ -7,7 +7,7 @@ class ModelService extends Chan.Service {
   async create(body) {
     try {
       const { model, tableName, status, remark = "" } = body;
-      await this.knex.transaction(async (trx) => {
+      await this.db.transaction(async (trx) => {
         // 新建表
         const sql_create = `CREATE TABLE ${tableName} (
               id INT(11) NOT NULL AUTO_INCREMENT,
@@ -18,12 +18,12 @@ class ModelService extends Chan.Service {
             COLLATE=utf8mb4_general_ci
             COMMENT='${remark}'`;
 
-        const createTableStatus = await this.knex
+        const createTableStatus = await this.db
           .raw(sql_create, [])
           .transacting(trx);
         // 新增内容
         const sql_insert = `INSERT INTO cms_model (model,tableName,status,remark) VALUES(?,?,?,?)`;
-        const result = await this.knex
+        const result = await this.db
           .raw(sql_insert, [model, tableName, status, remark])
           .transacting(trx);
         return {
@@ -40,8 +40,8 @@ class ModelService extends Chan.Service {
 
   async hasUse(id) {
     try {
-      const res = await this.knex
-        .select(this.knex.raw("COUNT(*) as count"))
+      const res = await this.db
+        .select(this.db.raw("COUNT(*) as count"))
         .from("cms_article as a")
         .leftJoin("cms_category as c", "c.id", "a.cid")
         .where("c.mid", id)
@@ -57,7 +57,7 @@ class ModelService extends Chan.Service {
   // 删
   async delete(id) {
     try {
-      const data = await Chan.knex(this.model).where("id", "=", id).first();
+      const data = await Chan.knex(this.tableName).where("id", "=", id).first();
       if (!data) {
         return "fail";
       }
@@ -67,7 +67,7 @@ class ModelService extends Chan.Service {
         const sql_del = `DROP TABLE ${tableName}`;
         await Chan.knex.raw(sql_del).transacting(trx);
         // 删除字段
-        await Chan.knex(this.model).where("id", "=", id).del().transacting(trx);
+        await Chan.knex(this.tableName).where("id", "=", id).del().transacting(trx);
       });
       return true;
     } catch (err) {

@@ -13,3 +13,7 @@ export const perms = [
   "role",
   "menu",
 ];
+
+export default {
+  perms,
+};

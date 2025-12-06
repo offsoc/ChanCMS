@@ -611,7 +611,7 @@ const common = {
   },
 
   // banner轮播图
-  async bannerSlide(cur = 1, pageSize = 10) {
+  async bannerSlide({ cur = 1, pageSize = 10 }) {
     try {
       const offset = parseInt((cur - 1) * pageSize);
       const list = await knex
