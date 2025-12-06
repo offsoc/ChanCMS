@@ -11,7 +11,7 @@
  Target Server Version : 50726 (5.7.26)
  File Encoding         : 65001
 
- Date: 30/11/2025 17:23:51
+ Date: 06/12/2025 22:59:09
 */
 
 SET NAMES utf8mb4;
@@ -450,35 +450,6 @@ INSERT INTO `sys_config_type` VALUES (2, 'wechat_minip', '微信小程序', '1',
 INSERT INTO `sys_config_type` VALUES (3, 'qiniu_oss', '七牛云配置', '1', '七牛云oss配置', '2025-03-01 21:03:35', '2025-03-07 14:20:21');
 INSERT INTO `sys_config_type` VALUES (4, 'cms_config', '应用设置', '1', '站点常用配置', '2025-03-04 19:10:51', '2025-03-07 14:21:05');
 INSERT INTO `sys_config_type` VALUES (5, 'cms_data', '模板数据', '1', '页面模板接口配置数据', '2025-07-30 10:25:04', '2025-11-30 16:39:29');
-
--- ----------------------------
--- Table structure for sys_configs
--- ----------------------------
-DROP TABLE IF EXISTS `sys_configs`;
-CREATE TABLE `sys_configs`  (
-  `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-  `type_code` varchar(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '关联配置类型',
-  `config_key` varchar(100) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '配置键',
-  `config_value` text CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL COMMENT '配置值',
-  `status` char(1) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL DEFAULT '1' COMMENT '开启（1 开启 2 关闭）',
-  `create_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `update_time` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `remark` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL COMMENT '备注',
-  PRIMARY KEY (`id`) USING BTREE,
-  UNIQUE INDEX `config_key`(`config_key`) USING BTREE,
-  INDEX `sys_configs_ibfk_1`(`type_code`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 9 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_general_ci COMMENT = '系统配置表' ROW_FORMAT = DYNAMIC;
-
--- ----------------------------
--- Records of sys_configs
--- ----------------------------
-INSERT INTO `sys_configs` VALUES (1, 'wechat_minip', 'appid', '2', '1', '2025-03-07 14:50:13', '2025-03-07 17:31:24', '小程序appId');
-INSERT INTO `sys_configs` VALUES (2, 'wechat_minip', 'secret', '2', '1', '2025-03-07 14:54:36', '2025-03-07 17:31:24', '');
-INSERT INTO `sys_configs` VALUES (3, 'qiniu_oss', 'accessKey', 'accessKey1', '1', '2025-03-07 14:59:31', '2025-03-07 17:52:32', '');
-INSERT INTO `sys_configs` VALUES (4, 'qiniu_oss', 'secretKey', 'secretKey1', '1', '2025-03-07 14:59:51', '2025-03-07 17:52:32', '');
-INSERT INTO `sys_configs` VALUES (5, 'qiniu_oss', 'bucket', 'bucket1', '1', '2025-03-07 15:00:08', '2025-03-07 17:52:32', '');
-INSERT INTO `sys_configs` VALUES (6, 'cms_config', 'uploadWay', '1', '1', '2025-03-07 15:00:42', '2025-03-07 15:00:42', '');
-INSERT INTO `sys_configs` VALUES (8, 'qiniu_oss', 'domain', 'domain1', '1', '2025-03-07 17:48:50', '2025-03-07 17:52:32', NULL);
 
 -- ----------------------------
 -- Table structure for sys_loginlog

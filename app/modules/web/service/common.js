@@ -696,6 +696,7 @@ const common = {
         .where("id", data.cid)
         .first();
 
+
       if (!modIdResult || modIdResult.mid === "0") {
         return { ...data, field: {} };
       }
@@ -720,6 +721,8 @@ const common = {
         .from(tableNameStr)
         .where("aid", id)
         .first();
+
+
 
       return { ...data, field: fieldResult || {} };
     } catch (err) {
